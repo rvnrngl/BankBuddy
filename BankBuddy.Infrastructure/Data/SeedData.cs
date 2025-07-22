@@ -8,7 +8,7 @@ namespace BankBuddy.Infrastructure.Data
 {
     public static class SeedData
     {
-        public static readonly Guid AdminRoleId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-        public static readonly Guid CustomerRoleId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        public static readonly Guid AdminRoleId = Guid.Parse("902134c6-3035-4cd4-b54c-0196592120be");
+        public static readonly Guid CustomerRoleId = Guid.Parse("ad0e577e-56f7-4fac-aa39-e324f6013593");
     }
 }

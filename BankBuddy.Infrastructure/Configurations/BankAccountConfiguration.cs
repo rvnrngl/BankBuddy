@@ -1,4 +1,5 @@
 ﻿using BankBuddy.Domain.Entities;
+using BankBuddy.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -13,12 +14,12 @@ namespace BankBuddy.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<BankAccount> builder)
         {
-            builder.HasKey(r => r.BankAccountId);
+            builder.HasKey(b => b.BankAccountId);
 
-            builder.Property(r => r.BankAccountId)
+            builder.Property(b => b.BankAccountId)
                    .HasDefaultValueSql("gen_random_uuid()");
 
-            builder.Property(r => r.AccountNumber)
+            builder.Property(b => b.AccountNumber)
                    .IsRequired()
                    .HasMaxLength(20);
 
@@ -27,6 +28,12 @@ namespace BankBuddy.Infrastructure.Configurations
 
             builder.Property(b => b.Balance)
                    .HasColumnType("decimal(18,2)");
+
+            builder.Property(b => b.AccountStatus)
+                   .HasDefaultValue(AccountStatus.Active);
+
+            builder.Property(u => u.CreatedAt)
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             builder.HasOne(b => b.User)
                    .WithMany(u => u.BankAccounts)
