@@ -56,5 +56,13 @@ namespace BankBuddy.API.Controllers
             UserInfoDTO response = await _authService.GetUserInfoAsync(Guid.Parse(userId));
             return Ok(response);
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("admin/register")]
+        public async Task<IActionResult> CreateAdmin([FromBody] RegisterDTO dto)
+        {
+            string response = await _authService.CreateAdminAsync(dto);
+            return Ok(response);
+        }
     }
 }

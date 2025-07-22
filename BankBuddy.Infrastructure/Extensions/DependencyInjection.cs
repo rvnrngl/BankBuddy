@@ -114,6 +114,19 @@ namespace BankBuddy.Infrastructure.Extensions
                         });
 
                         return context.Response.WriteAsync(result);
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.ContentType = "application/json";
+
+                        var result = JsonSerializer.Serialize(new
+                        {
+                            status = "Fail",
+                            message = "You do not have permission to access this resource"
+                        });
+
+                        return context.Response.WriteAsync(result);
                     }
                 };
             });

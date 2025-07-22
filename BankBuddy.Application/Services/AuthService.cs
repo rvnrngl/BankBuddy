@@ -25,7 +25,7 @@ namespace BankBuddy.Application.Services
         {
             User? existingUser = await _userRepository.FindAsync(u => u.Email == dto.Email);
 
-            if (existingUser is not null) throw new Exception("Email already in use.");
+            if (existingUser is not null) throw new AppException("Email already in use.", StatusCodes.Status409Conflict);
 
             Role? userRole = await _roleRepository.FindAsync(r => r.Name == "Customer") ?? throw new AppException("User role not found.", StatusCodes.Status404NotFound);
 
@@ -124,6 +124,24 @@ namespace BankBuddy.Application.Services
             User? user = await _userRepository.GetByIdAsync(userId) ?? throw new AppException("User not found.", StatusCodes.Status404NotFound);
 
             return _mapper.Map<UserInfoDTO>(user);
+        }
+
+        public async Task<string> CreateAdminAsync(RegisterDTO dto)
+        {
+            User? existingUser = await _userRepository.FindAsync(u => u.Email == dto.Email);
+
+            if (existingUser is not null) throw new AppException("Email already in use.", StatusCodes.Status409Conflict);
+
+            Role? userRole = await _roleRepository.FindAsync(r => r.Name == "Admin") ?? throw new AppException("Administrator role not found.", StatusCodes.Status404NotFound);
+
+            var user = _mapper.Map<User>(dto);
+
+            user.RoleId = userRole.RoleId;
+
+            await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangesAsync();
+
+            return "Admin created successfully.";
         }
 
         private string GenerateToken(User user, Role role)
