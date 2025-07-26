@@ -19,13 +19,19 @@ using Microsoft.AspNetCore.Http;
 
 namespace BankBuddy.Application.Services
 {
-    public class AuthService(IGenericRepository<User> _userRepository, IGenericRepository<Role> _roleRepository, IGenericRepository<RefreshToken> _refreshTokenRepository,IConfiguration _config, IMapper _mapper) : IAuthService
+    public class AuthService(
+        IGenericRepository<User> _userRepository,
+        IGenericRepository<Role> _roleRepository,
+        IGenericRepository<RefreshToken> _refreshTokenRepository,
+        IConfiguration _config,
+        IMapper _mapper
+    ) : IAuthService
     {
         public async Task<AuthResponseDTO> RegisterAsync(RegisterDTO dto)
         {
             User? existingUser = await _userRepository.FindAsync(u => u.Email == dto.Email);
 
-            if (existingUser is not null) throw new Exception("Email already in use.");
+            if (existingUser is not null) throw new AppException("Email already in use.", StatusCodes.Status409Conflict);
 
             Role? userRole = await _roleRepository.FindAsync(r => r.Name == "Customer") ?? throw new AppException("User role not found.", StatusCodes.Status404NotFound);
 

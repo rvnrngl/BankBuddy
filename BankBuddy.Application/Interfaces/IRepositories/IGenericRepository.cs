@@ -9,9 +9,10 @@ namespace BankBuddy.Application.Interfaces.IRepositories
     public interface IGenericRepository<T> where T : class
     {
         Task AddAsync(T entity);
-        Task<IEnumerable<T>> FindAllAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null);
+        Task<bool> AnyAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate);
+        Task<List<T>> FindAllAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null);
         Task<T?> FindAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null);
-        Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? include = null);
+        Task<List<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? include = null);
         Task<T?> GetByIdAsync(Guid id, Func<IQueryable<T>, IQueryable<T>>? include = null);
         void Remove(T entity);
         Task SaveChangesAsync();

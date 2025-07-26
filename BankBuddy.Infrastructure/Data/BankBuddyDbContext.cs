@@ -16,13 +16,15 @@ namespace BankBuddy.Infrastructure.Data
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+        public DbSet<BankAccount> BankAccounts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(BankBuddyDbContext).Assembly);
 
             modelBuilder.Entity<Role>().HasData(
-                new Role { RoleId = Guid.NewGuid(), Name = "Customer" },
-                new Role { RoleId = Guid.NewGuid(), Name = "Admin" }
+                new Role { RoleId = SeedData.CustomerRoleId, Name = "Customer" },
+                new Role { RoleId = SeedData.AdminRoleId, Name = "Admin" }
             );
         }
     }

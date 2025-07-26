@@ -31,6 +31,9 @@ namespace BankBuddy.Application.Mappings
                 .ForMember(dest => dest.RefreshToken, opt => opt.MapFrom(src => src.RefreshToken));
 
             CreateMap<User, UserInfoDTO>();
+
+            CreateMap<User, UserDetailsDTO>()
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.Name));
         }
     }
 }

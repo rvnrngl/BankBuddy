@@ -3,6 +3,7 @@ using System;
 using BankBuddy.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankBuddy.Infrastructure.Migrations
 {
     [DbContext(typeof(BankBuddyDbContext))]
-    partial class BankBuddyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250721122404_AddBankAccountTable")]
+    partial class AddBankAccountTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,23 +37,17 @@ namespace BankBuddy.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<string>("AccountStatus")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Active");
+                    b.Property<int>("AccountStatus")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("AccountType")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("AccountType")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -122,12 +119,12 @@ namespace BankBuddy.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            RoleId = new Guid("ad0e577e-56f7-4fac-aa39-e324f6013593"),
+                            RoleId = new Guid("22222222-2222-2222-2222-222222222222"),
                             Name = "Customer"
                         },
                         new
                         {
-                            RoleId = new Guid("902134c6-3035-4cd4-b54c-0196592120be"),
+                            RoleId = new Guid("11111111-1111-1111-1111-111111111111"),
                             Name = "Admin"
                         });
                 });

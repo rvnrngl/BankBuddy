@@ -16,7 +16,7 @@ namespace BankBuddy.Infrastructure.Configurations
             builder.HasKey(r => r.RoleId);
 
             builder.Property(r => r.RoleId)
-                .HasDefaultValueSql("gen_random_uuid()");
+                   .HasDefaultValueSql("gen_random_uuid()");
 
             builder.Property(r => r.Name)
                    .IsRequired()

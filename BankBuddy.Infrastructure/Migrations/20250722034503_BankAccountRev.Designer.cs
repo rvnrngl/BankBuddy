@@ -3,6 +3,7 @@ using System;
 using BankBuddy.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankBuddy.Infrastructure.Migrations
 {
     [DbContext(typeof(BankBuddyDbContext))]
-    partial class BankBuddyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250722034503_BankAccountRev")]
+    partial class BankAccountRev
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,15 +37,13 @@ namespace BankBuddy.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<string>("AccountStatus")
-                        .IsRequired()
+                    b.Property<int>("AccountStatus")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("Active");
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
-                    b.Property<string>("AccountType")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("AccountType")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");

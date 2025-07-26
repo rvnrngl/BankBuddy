@@ -1,4 +1,6 @@
-﻿using BankBuddy.Application.Interfaces.IRepositories;
+﻿using BankBuddy.Application.Commons.Utils;
+using BankBuddy.Application.Interfaces;
+using BankBuddy.Application.Interfaces.IRepositories;
 using BankBuddy.Application.Interfaces.IServices;
 using BankBuddy.Application.Mappings;
 using BankBuddy.Application.Services;
@@ -23,6 +25,9 @@ namespace BankBuddy.Infrastructure.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IBankAccountService, BankAccountService>();
+            services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
             return services;
         }
 
@@ -38,6 +43,7 @@ namespace BankBuddy.Infrastructure.Extensions
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<AuthMappingProfile>();
+                cfg.AddProfile<BankAccountMappingProfile>();
             });
 
             return services;
@@ -111,6 +117,19 @@ namespace BankBuddy.Infrastructure.Extensions
                         {
                             status = "Fail",
                             message = "Token is invalid or expired"
+                        });
+
+                        return context.Response.WriteAsync(result);
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.ContentType = "application/json";
+
+                        var result = JsonSerializer.Serialize(new
+                        {
+                            status = "Fail",
+                            message = "You do not have permission to access this resource"
                         });
 
                         return context.Response.WriteAsync(result);
