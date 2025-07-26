@@ -7,10 +7,12 @@ using System.Security.Claims;
 
 namespace BankBuddy.API.Controllers
 {
+    [Authorize]
     [Route("api/auth")]
     [ApiController]
     public class AuthController(IAuthService _authService) : ControllerBase
     {
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
         {
@@ -18,6 +20,7 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
@@ -25,6 +28,7 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] string refreshToken)
         {
@@ -32,6 +36,7 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] string token)
         {
@@ -39,7 +44,6 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
-        [Authorize]
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
         {
@@ -48,13 +52,28 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
-        [Authorize]
         [HttpPost("info")]
         public async Task<IActionResult> GetUserInfo()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
             UserInfoDTO response = await _authService.GetUserInfoAsync(Guid.Parse(userId));
             return Ok(response);
+        }
+
+        [HttpPost("send-verification")]
+        public async Task<IActionResult> SendVerificationEmail()
+        {
+            Guid userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            string email = User.FindFirst(ClaimTypes.Email)?.Value!;
+            string response = await _authService.SendVerificationEmailAsync(userId, email);
+            return Ok(response);
+        }
+
+        [HttpGet("verify")]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        {
+            string result = await _authService.VerifyEmailAsync(token);
+            return Ok(result);
         }
     }
 }

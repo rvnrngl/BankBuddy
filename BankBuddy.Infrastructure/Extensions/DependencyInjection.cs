@@ -28,6 +28,7 @@ namespace BankBuddy.Infrastructure.Extensions
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBankAccountService, BankAccountService>();
             services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
+            services.AddScoped<IEmailService, EmailService>();
             return services;
         }
 

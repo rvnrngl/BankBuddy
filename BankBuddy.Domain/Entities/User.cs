@@ -31,6 +31,8 @@ namespace BankBuddy.Domain.Entities
 
         public ICollection<RefreshToken> RefreshTokens { get; set; } = [];
 
+        public ICollection<VerificationToken> VerificationTokens { get; set; } = [];
+
         public ICollection<BankAccount> BankAccounts { get; set; } = [];
     }
 }

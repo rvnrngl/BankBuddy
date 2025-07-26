@@ -23,6 +23,8 @@ namespace BankBuddy.Application.Services
         IGenericRepository<User> _userRepository,
         IGenericRepository<Role> _roleRepository,
         IGenericRepository<RefreshToken> _refreshTokenRepository,
+        IGenericRepository<VerificationToken> _verificationRepository,
+        IEmailService _emailService,
         IConfiguration _config,
         IMapper _mapper
     ) : IAuthService
@@ -127,9 +129,49 @@ namespace BankBuddy.Application.Services
 
         public async Task<UserInfoDTO> GetUserInfoAsync(Guid userId)
         {
-            User? user = await _userRepository.GetByIdAsync(userId) ?? throw new AppException("User not found.", StatusCodes.Status404NotFound);
+            User user = await _userRepository.GetByIdAsync(userId) ?? throw new AppException("User not found.", StatusCodes.Status404NotFound);
 
             return _mapper.Map<UserInfoDTO>(user);
+        }
+
+        public async Task<string> SendVerificationEmailAsync(Guid userId, string email)
+        {
+            string token = Guid.NewGuid().ToString();
+
+            VerificationToken verificationToken = new()
+            {
+                UserId = userId,
+                Token = token,
+                ExpiresAt = DateTime.UtcNow.AddHours(24),
+            };
+
+            await _verificationRepository.AddAsync(verificationToken);
+            await _userRepository.SaveChangesAsync();
+
+            string subject = "Verify your email address";
+            string body = $"Your verification token is: {token}";
+
+            await _emailService.SendEmailAsync(email, subject, body);
+
+            return "Verification email sent.";
+        }
+
+        public async Task<string> VerifyEmailAsync(string token)
+        {
+            VerificationToken verificationToken = await _verificationRepository.FindAsync(
+                v => v.Token == token,
+                include: q => q.Include(v => v.User)) ?? throw new AppException("Invalid or expired verification token.", StatusCodes.Status400BadRequest);
+
+            User user = verificationToken.User;
+
+            user.IsVerified = true;
+            _userRepository.Update(user);
+            await _userRepository.SaveChangesAsync();
+
+            _verificationRepository.Remove(verificationToken);
+            await _verificationRepository.SaveChangesAsync();
+
+            return "Email verified successfully.";
         }
 
         private string GenerateToken(User user, Role role)

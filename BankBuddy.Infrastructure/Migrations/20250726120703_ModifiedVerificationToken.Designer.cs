@@ -3,6 +3,7 @@ using System;
 using BankBuddy.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BankBuddy.Infrastructure.Migrations
 {
     [DbContext(typeof(BankBuddyDbContext))]
-    partial class BankBuddyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250726120703_ModifiedVerificationToken")]
+    partial class ModifiedVerificationToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,13 +246,11 @@ namespace BankBuddy.Infrastructure.Migrations
 
             modelBuilder.Entity("BankBuddy.Domain.Entities.VerificationToken", b =>
                 {
-                    b.HasOne("BankBuddy.Domain.Entities.User", "User")
-                        .WithMany("VerificationTokens")
+                    b.HasOne("BankBuddy.Domain.Entities.User", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BankBuddy.Domain.Entities.Role", b =>
@@ -262,8 +263,6 @@ namespace BankBuddy.Infrastructure.Migrations
                     b.Navigation("BankAccounts");
 
                     b.Navigation("RefreshTokens");
-
-                    b.Navigation("VerificationTokens");
                 });
 #pragma warning restore 612, 618
         }

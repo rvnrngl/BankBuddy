@@ -15,5 +15,7 @@ namespace BankBuddy.Application.Interfaces.IServices
         Task<string> LogoutAsync(string refreshToken);
         Task<AuthResponseDTO> RefreshTokenAsync(string token);
         Task<AuthResponseDTO> RegisterAsync(RegisterDTO dto);
+        Task<string> SendVerificationEmailAsync(Guid userId, string email);
+        Task<string> VerifyEmailAsync(string token);
     }
 }
