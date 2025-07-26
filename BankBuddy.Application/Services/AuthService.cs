@@ -19,7 +19,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace BankBuddy.Application.Services
 {
-    public class AuthService(IGenericRepository<User> _userRepository, IGenericRepository<Role> _roleRepository, IGenericRepository<RefreshToken> _refreshTokenRepository,IConfiguration _config, IMapper _mapper) : IAuthService
+    public class AuthService(
+        IGenericRepository<User> _userRepository,
+        IGenericRepository<Role> _roleRepository,
+        IGenericRepository<RefreshToken> _refreshTokenRepository,
+        IConfiguration _config,
+        IMapper _mapper
+    ) : IAuthService
     {
         public async Task<AuthResponseDTO> RegisterAsync(RegisterDTO dto)
         {

@@ -14,6 +14,11 @@ namespace BankBuddy.Infrastructure.Repositories
     {
         private readonly DbSet<T> _dbSet = context.Set<T>();
 
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.AnyAsync(predicate);
+        }
+
         public async Task<T?> GetByIdAsync(Guid id, Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
             IQueryable<T> query = _dbSet;

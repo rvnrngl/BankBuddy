@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace BankBuddy.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController(IAuthService _authService) : ControllerBase
     {
