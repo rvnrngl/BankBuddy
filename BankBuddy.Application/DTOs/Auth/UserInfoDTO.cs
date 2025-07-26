@@ -8,6 +8,8 @@ namespace BankBuddy.Application.DTOs.Auth
 {
     public class UserInfoDTO
     {
+        public Guid UserId { get; set; }
+
         public string FirstName { get; set; } = default!;
 
         public string MiddleName { get; set; } = default!;
@@ -15,6 +17,8 @@ namespace BankBuddy.Application.DTOs.Auth
         public string LastName { get; set; } = default!;
 
         public string Email { get; set; } = default!;
+        
+        public bool IsVerified { get; set; }
 
         public DateTime CreatedAt { get; set; }
     }

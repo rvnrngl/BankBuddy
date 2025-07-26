@@ -10,7 +10,6 @@ namespace BankBuddy.Application.Interfaces.IServices
     public interface IAuthService
     {
         Task<string> ChangePasswordAsync(Guid userId, ChangePasswordDTO dto);
-        Task<string> CreateAdminAsync(RegisterDTO dto);
         Task<UserInfoDTO> GetUserInfoAsync(Guid userId);
         Task<AuthResponseDTO> LoginAsync(LoginDTO dto);
         Task<string> LogoutAsync(string refreshToken);

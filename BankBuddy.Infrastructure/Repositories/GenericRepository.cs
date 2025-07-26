@@ -30,7 +30,7 @@ namespace BankBuddy.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, keyPropertyName) == id);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? include = null)
+        public async Task<List<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -48,7 +48,7 @@ namespace BankBuddy.Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null)
+        public async Task<List<T>> FindAllAsync(Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null)
         {
             IQueryable<T> query = _dbSet;
 

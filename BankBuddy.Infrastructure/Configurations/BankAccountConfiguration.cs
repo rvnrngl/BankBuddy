@@ -29,8 +29,12 @@ namespace BankBuddy.Infrastructure.Configurations
             builder.Property(b => b.Balance)
                    .HasColumnType("decimal(18,2)");
 
+            builder.Property(b => b.AccountType)
+                   .HasConversion<string>();
+
             builder.Property(b => b.AccountStatus)
-                   .HasDefaultValue(AccountStatus.Active);
+                   .HasDefaultValue(AccountStatus.Active)
+                   .HasConversion<string>();
 
             builder.Property(u => u.CreatedAt)
                    .HasDefaultValueSql("CURRENT_TIMESTAMP");

@@ -38,5 +38,23 @@ namespace BankBuddy.Application.Services
 
             return _mapper.Map<BankAccountResponseDTO>(account);
         }
+
+        public async Task<BankAccountResponseDTO> GetUserBankAccountAsync(Guid userId, Guid bankAccountId)
+        {
+            BankAccount? bankAccount = await _bankAccountRepository.FindAsync(b => b.UserId == userId && b.BankAccountId == bankAccountId) ?? throw new AppException("Bank Account not found.", StatusCodes.Status404NotFound);
+
+            return _mapper.Map<BankAccountResponseDTO>(bankAccount);
+        }
+
+        public async Task<List<BankAccountResponseDTO>> GetUserBankAccountsAsync(Guid userId, AccountType? type = null, AccountStatus? status = null)
+        {
+            List<BankAccount> bankAccounts = await _bankAccountRepository.FindAllAsync(
+                b => b.UserId == userId &&
+                (type == null || b.AccountType == type) &&
+                (status == null || b.AccountStatus == status)
+                );
+
+            return _mapper.Map<List<BankAccountResponseDTO>>(bankAccounts);
+        }
     }
 }

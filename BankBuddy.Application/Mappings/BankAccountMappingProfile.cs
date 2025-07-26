@@ -13,7 +13,7 @@ namespace BankBuddy.Application.Mappings
     {
         public BankAccountMappingProfile()
         {
-            CreateMap<BankAccountResponseDTO, BankAccount>();
+            CreateMap<BankAccount, BankAccountResponseDTO>();
         }
     }
 }
