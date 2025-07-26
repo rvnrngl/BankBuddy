@@ -18,6 +18,8 @@ namespace BankBuddy.Infrastructure.Data
 
         public DbSet<BankAccount> BankAccounts { get; set; }
 
+        public DbSet<VerificationToken> VerificationTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(BankBuddyDbContext).Assembly);
