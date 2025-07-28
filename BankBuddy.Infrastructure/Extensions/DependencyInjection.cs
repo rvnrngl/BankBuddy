@@ -29,6 +29,7 @@ namespace BankBuddy.Infrastructure.Extensions
             services.AddScoped<IBankAccountService, BankAccountService>();
             services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ITransactionService, TransactionService>();
             return services;
         }
 
@@ -45,6 +46,7 @@ namespace BankBuddy.Infrastructure.Extensions
             {
                 cfg.AddProfile<AuthMappingProfile>();
                 cfg.AddProfile<BankAccountMappingProfile>();
+                cfg.AddProfile<TransactionMappingProfile>();
             });
 
             return services;
