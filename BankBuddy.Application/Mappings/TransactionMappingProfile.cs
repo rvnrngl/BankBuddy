@@ -26,16 +26,28 @@ namespace BankBuddy.Application.Mappings
                 .ForMember(dest => dest.PreviousBalance, opt => opt.Ignore())
                 .ForMember(dest => dest.NewBalance, opt => opt.Ignore());
 
-            CreateMap<Transaction, TransferReceiptDTO>()
+            CreateMap<Transaction, TransactionReceipt>()
                 .ForMember(dest => dest.TransactionId, opt => opt.MapFrom(src => src.TransactionId))
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-                .ForMember(dest => dest.TransferredAt, opt => opt.MapFrom(src => src.CreatedAt))
-                .ForMember(dest => dest.ReferenceId, opt => opt.MapFrom(src => src.ReferenceId ?? string.Empty))
+                .ForMember(dest => dest.Timestamp, opt => opt.MapFrom(src => src.CreatedAt))
+                .ForMember(dest => dest.ReferenceId, opt => opt.MapFrom(src => src.ReferenceId ?? string.Empty));
+
+            CreateMap<Transaction, TransferReceiptDTO>()
+                .IncludeBase<Transaction, TransactionReceipt>()
                 .ForMember(dest => dest.FromAccount, opt => opt.Ignore())
                 .ForMember(dest => dest.ToAccount, opt => opt.Ignore());
+
+            CreateMap<Transaction, DepositReceiptDTO>()
+                .IncludeBase<Transaction, TransactionReceipt>()
+                .ForMember(dest => dest.ToAccount, opt => opt.Ignore());
+
+            CreateMap<Transaction, WithdrawReceiptDTO>()
+                .IncludeBase<Transaction, TransactionReceipt>()
+                .ForMember(dest => dest.FromAccount, opt => opt.Ignore());
+
         }
     }
 }

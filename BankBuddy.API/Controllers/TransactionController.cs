@@ -19,5 +19,21 @@ namespace BankBuddy.API.Controllers
             TransferReceiptDTO response = await _transactionService.TransferAsync(userId, dto);
             return Ok(response);
         }
+
+        [HttpPost("deposit")]
+        public async Task<IActionResult> Deposit([FromBody] DepositRequestDTO dto)
+        {
+            Guid userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            DepositReceiptDTO response = await _transactionService.DepositAsync(userId, dto);
+            return Ok(response);
+        }
+
+        [HttpPost("withdraw")]
+        public async Task<IActionResult> Withdraw([FromBody] WithdrawRequestDTO dto)
+        {
+            Guid userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            WithdrawReceiptDTO response = await _transactionService.WithdrawAsync(userId, dto);
+            return Ok(response);
+        }
     }
 }

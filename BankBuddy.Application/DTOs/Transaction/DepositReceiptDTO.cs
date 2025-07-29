@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace BankBuddy.Application.DTOs.Transaction
 {
-    public class TransferReceiptDTO : TransactionReceipt
+    public class DepositReceiptDTO : TransactionReceipt
     {
-        public AccountSummary FromAccount { get; set; } = null!;
-
         public AccountSummary ToAccount { get; set; } = null!;
     }
 }

@@ -9,6 +9,8 @@ namespace BankBuddy.Application.Interfaces.IServices
 {
     public interface ITransactionService
     {
+        Task<DepositReceiptDTO> DepositAsync(Guid userId, DepositRequestDTO dto);
         Task<TransferReceiptDTO> TransferAsync(Guid userId, TransactionRequestDTO dto);
+        Task<WithdrawReceiptDTO> WithdrawAsync(Guid userId, WithdrawRequestDTO dto);
     }
 }
