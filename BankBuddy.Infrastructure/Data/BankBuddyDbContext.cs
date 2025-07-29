@@ -20,6 +20,10 @@ namespace BankBuddy.Infrastructure.Data
 
         public DbSet<VerificationToken> VerificationTokens { get; set; }
 
+        public DbSet<Transaction> Transactions { get; set; }
+
+        public DbSet<Dispute> Disputes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(BankBuddyDbContext).Assembly);
