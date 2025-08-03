@@ -14,6 +14,7 @@ namespace BankBuddy.Application.Interfaces.IRepositories
         Task<T?> FindAsync(System.Linq.Expressions.Expression<Func<T, bool>> predicate, Func<IQueryable<T>, IQueryable<T>>? include = null);
         Task<List<T>> GetAllAsync(Func<IQueryable<T>, IQueryable<T>>? include = null);
         Task<T?> GetByIdAsync(Guid id, Func<IQueryable<T>, IQueryable<T>>? include = null);
+        IQueryable<T> Query();
         void Remove(T entity);
         Task SaveChangesAsync();
         void Update(T entity);
