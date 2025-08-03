@@ -1,4 +1,5 @@
-﻿using BankBuddy.Application.DTOs.Transaction;
+﻿using BankBuddy.Application.Commons.Utils;
+using BankBuddy.Application.DTOs.Transaction;
 using BankBuddy.Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -33,6 +34,14 @@ namespace BankBuddy.API.Controllers
         {
             Guid userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
             WithdrawReceiptDTO response = await _transactionService.WithdrawAsync(userId, dto);
+            return Ok(response);
+        }
+
+        [HttpGet("historry")]
+        public async Task<IActionResult> GetMyTransactionHistory([FromQuery] TransactionHistoryQueryDTO dto)
+        {
+            Guid userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+            PaginatedResult<TransactionHistoryDTO> response = await _transactionService.GetMyTransactionHistoryAsync(userId, dto);
             return Ok(response);
         }
     }

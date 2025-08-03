@@ -1,20 +1,22 @@
-﻿using BankBuddy.Application.Commons;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using BankBuddy.Application.Commons;
+using BankBuddy.Application.Commons.Utils;
 using BankBuddy.Application.DTOs.Transaction;
 using BankBuddy.Application.Interfaces.IRepositories;
 using BankBuddy.Application.Interfaces.IServices;
 using BankBuddy.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using BankBuddy.Domain.Enums;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
 using System.Transactions;
-using TransactionStatus = BankBuddy.Domain.Enums.TransactionStatus;
 using Transaction = BankBuddy.Domain.Entities.Transaction;
-using Microsoft.EntityFrameworkCore;
+using TransactionStatus = BankBuddy.Domain.Enums.TransactionStatus;
 
 namespace BankBuddy.Application.Services
 {
@@ -169,6 +171,41 @@ namespace BankBuddy.Application.Services
             receipt.ReferenceId = transaction.ReferenceId;
 
             return receipt;
+        }
+
+        public async Task<PaginatedResult<TransactionHistoryDTO>> GetMyTransactionHistoryAsync(Guid userId, TransactionHistoryQueryDTO query)
+        {
+            BankAccount? account = await _bankAccountRepository.FindAsync(
+                b => b.BankAccountId == query.AccountId && b.UserId == userId)
+                ?? throw new AppException("Account not found or does not belong to you.", StatusCodes.Status403Forbidden);
+
+            IQueryable<Transaction> transactions = _transactionRepository.Query()
+                .Include(t => t.FromAccount).ThenInclude(a => a.User)
+                .Include(t => t.ToAccount).ThenInclude(a => a.User)
+                .Where(t =>
+                    (
+                        (t.FromAccount != null && t.FromAccount.UserId == userId) ||
+                        (t.ToAccount != null && t.ToAccount.UserId == userId)
+                    ) &&
+                    (t.FromAccountId == query.AccountId || t.ToAccountId == query.AccountId) &&
+                    (!query.Type.HasValue || t.Type == query.Type) &&
+                    (!query.FromDate.HasValue || t.CreatedAt >= query.FromDate) &&
+                    (!query.ToDate.HasValue || t.CreatedAt <= query.ToDate) &&
+                    (!query.MinAmount.HasValue || t.Amount >= query.MinAmount) &&
+                    (!query.MaxAmount.HasValue || t.Amount <= query.MaxAmount)
+                );
+
+            int totalItems = await transactions.CountAsync();
+
+            List<Transaction> transactionList = await transactions
+                .OrderByDescending(t => t.CreatedAt)
+                .Skip((query.Page - 1) * query.PageSize)
+                .Take(query.PageSize)
+                .ToListAsync();
+
+            List<TransactionHistoryDTO> results = _mapper.Map<List<TransactionHistoryDTO>>(transactionList);
+
+            return new PaginatedResult<TransactionHistoryDTO>(results, query.Page, query.PageSize, totalItems);
         }
     }
 }

@@ -48,6 +48,26 @@ namespace BankBuddy.Application.Mappings
                 .IncludeBase<Transaction, TransactionReceipt>()
                 .ForMember(dest => dest.FromAccount, opt => opt.Ignore());
 
+            CreateMap<Transaction, TransactionHistoryDTO>()
+                .ForMember(dest => dest.FromAccountNumber, opt => opt.MapFrom(src => src.FromAccount != null ? src.FromAccount.AccountNumber : null))
+                .ForMember(dest => dest.FromAccountName, opt => opt.MapFrom(src => src.FromAccount != null
+                    ? string.Join(" ", new[]
+                    {
+                        src.FromAccount.User.FirstName,
+                        src.FromAccount.User.MiddleName,
+                        src.FromAccount.User.LastName
+                    }.Where(n => !string.IsNullOrWhiteSpace(n)))
+                    : null))
+                .ForMember(dest => dest.ToAccountNumber, opt => opt.MapFrom(src => src.ToAccount != null ? src.ToAccount.AccountNumber : null))
+                .ForMember(dest => dest.ToAccountName, opt => opt.MapFrom(src => src.ToAccount != null
+                    ? string.Join(" ", new[]
+                    {
+                        src.ToAccount.User.FirstName,
+                        src.ToAccount.User.MiddleName,
+                        src.ToAccount.User.LastName
+                    }.Where(n => !string.IsNullOrWhiteSpace(n)))
+                    : null));
+
         }
     }
 }
