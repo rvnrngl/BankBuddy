@@ -117,7 +117,7 @@ namespace BankBuddy.Application.Services
         {
             User? user = await _userRepository.GetByIdAsync(userId) ?? throw new AppException("User not found.", StatusCodes.Status404NotFound);
 
-            if (BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash)) throw new AppException("Current password is incorrect.", StatusCodes.Status400BadRequest);
+            if (!BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash)) throw new AppException("Current password is incorrect.", StatusCodes.Status400BadRequest);
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
 
