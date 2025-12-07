@@ -3,6 +3,7 @@ using BankBuddy.Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace BankBuddy.API.Controllers
@@ -20,6 +21,7 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting("login-policy")]
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
