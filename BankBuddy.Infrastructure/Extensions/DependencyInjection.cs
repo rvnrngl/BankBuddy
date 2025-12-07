@@ -6,7 +6,9 @@ using BankBuddy.Application.Mappings;
 using BankBuddy.Application.Services;
 using BankBuddy.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -16,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 
 namespace BankBuddy.Infrastructure.Extensions
@@ -137,6 +140,43 @@ namespace BankBuddy.Infrastructure.Extensions
 
                         return context.Response.WriteAsync(result);
                     }
+                };
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+        {
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                options.AddPolicy("login-policy", context =>
+                {
+                    var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        ip,
+                        key => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(1),
+                            QueueLimit = 0
+                        });
+                });
+
+                options.AddFixedWindowLimiter("global", opt =>
+                {
+                    opt.PermitLimit = 200;
+                    opt.Window = TimeSpan.FromMinutes(1);
+                });
+
+                options.OnRejected = async (context, token) =>
+                {
+                    context.HttpContext.Response.ContentType = "application/json";
+                    await context.HttpContext.Response.WriteAsync(
+                        "{\"error\":\"Too many login attempts. Try again later.\"}");
                 };
             });
 

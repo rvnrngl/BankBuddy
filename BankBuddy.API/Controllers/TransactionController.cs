@@ -37,7 +37,7 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
-        [HttpGet("historry")]
+        [HttpGet("history")]
         public async Task<IActionResult> GetMyTransactionHistory([FromQuery] TransactionHistoryQueryDTO dto)
         {
             Guid userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
