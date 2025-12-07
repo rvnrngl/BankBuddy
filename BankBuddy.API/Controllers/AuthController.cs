@@ -13,6 +13,7 @@ namespace BankBuddy.API.Controllers
     [ApiController]
     public class AuthController(IAuthService _authService) : ControllerBase
     {
+        [EnableRateLimiting("register-policy")]
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
@@ -46,6 +47,7 @@ namespace BankBuddy.API.Controllers
             return Ok(response);
         }
 
+        [EnableRateLimiting("password-policy")]
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
         {

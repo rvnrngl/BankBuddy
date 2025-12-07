@@ -119,7 +119,7 @@ namespace BankBuddy.Infrastructure.Extensions
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.ContentType = "application/json";
 
-                        var result = JsonSerializer.Serialize(new
+                        string result = JsonSerializer.Serialize(new
                         {
                             status = "Fail",
                             message = "Token is invalid or expired"
@@ -132,7 +132,7 @@ namespace BankBuddy.Infrastructure.Extensions
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.ContentType = "application/json";
 
-                        var result = JsonSerializer.Serialize(new
+                        string result = JsonSerializer.Serialize(new
                         {
                             status = "Fail",
                             message = "You do not have permission to access this resource"
@@ -154,7 +154,7 @@ namespace BankBuddy.Infrastructure.Extensions
 
                 options.AddPolicy("login-policy", context =>
                 {
-                    var ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                    string ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
 
                     return RateLimitPartition.GetFixedWindowLimiter(
                         ip,
@@ -163,6 +163,32 @@ namespace BankBuddy.Infrastructure.Extensions
                             PermitLimit = 5,
                             Window = TimeSpan.FromMinutes(1),
                             QueueLimit = 0
+                        });
+                });
+
+                options.AddPolicy("register-policy", context =>
+                {
+                    string ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        ip,
+                        key => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 3,
+                            Window = TimeSpan.FromMinutes(5)
+                        });
+                });
+
+                options.AddPolicy("password-policy", context =>
+                {
+                    string ip = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+                    return RateLimitPartition.GetFixedWindowLimiter(
+                        ip,
+                        key => new FixedWindowRateLimiterOptions
+                        {
+                            PermitLimit = 5,
+                            Window = TimeSpan.FromMinutes(10)
                         });
                 });
 
